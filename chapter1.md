@@ -81,6 +81,42 @@ $ export GOPATH=$(go env GOPATH)
 ```
 
 
+#### 导入路径
+
+导入路径是包的唯一标识字符串，该包的导入路径与在工作空间的路径一致，或者和远程仓库的一致
+
+如果导入的包来自标准库，那么则使用短的导入路径，比如`fmt`, `net/http`等，如果是来自你自己所处理的包
+那么你必须选择一个基础路径来作为导入的路径，以此来避免和标准库以及其他库的冲突
+
+如果你的代码是放在远程的仓库，那么应该使用仓库目录作为你的基础目录，比如你在github上面有一个帐号`github.com/user`
+那么就可以使用它来作为你自己包的基础路径
+
+需啊哟注意的是，在你构建你的代码之前，不需要将米的代码推送倒远程仓库，接下来将会使用`github.com/user`作为一个基础路径来解释
+
+```bash
+$ mkdir -p $GOPATH/src/github.com/user
+```
+
+#### 你得第一个项目
+
+1. 首先在工作目录下创建一个新的子目录，作为包的源码目录
+
+```bash
+$ mkdir $GOPATH/src/github.com/user/hello
+```
+
+1. 然后在该文件下面创建一个新的文件叫做`hello.go`
+
+```go
+package main
+
+import "fmt"
+
+func main(){
+    fmt.Println("Hello, world")
+}
+```
+
 
 
 
