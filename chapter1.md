@@ -75,6 +75,7 @@ $ export PATH=$PATH:$(go env GOPATH)/bin
 ```
 
 1. 设置Ｇo的工作空间倒命令行
+
 ```bash
 $ export GOPATH=$(go env GOPATH)
 ```
