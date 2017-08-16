@@ -117,6 +117,12 @@ func main(){
 }
 ```
 
+1. 接着使用的Ｇo的工具进行构建
+
+```go
+$ go install github.com/user/hello
+```
+
 
 
 
