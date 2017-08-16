@@ -63,6 +63,39 @@ src/
 
 
 
-#### GOPATH
+#### GOPATH环境变量
 
-`GOPATH`环境变量标识的是Ｇo的工作空间
+`GOPATH`环境变量标识的是Ｇo的工作空间,默认情况下会在你的家目录下创建一个`go`的文件夹来作为你的Ｇo的工作空间，当然可以通过设置来变更工作空间，
+当然工作空间的路径不能和Ｇo的安装路径一致
+
+1. 增加Go的工作空间的`bin`子目录倒到path中
+
+```bash
+$ export PATH=$PATH:$(go env GOPATH)/bin
+```
+
+1. 设置Ｇo的工作空间倒命令行
+```bash
+$ export GOPATH=$(go env GOPATH)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
