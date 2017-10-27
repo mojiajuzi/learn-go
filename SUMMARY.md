@@ -6,5 +6,5 @@
 * [类型](lei-xing.md)
 * [配置文件](pei-zhi-wen-jian.md)
 * [map](map.md)
-* Array
+* [Array](array.md)
 
