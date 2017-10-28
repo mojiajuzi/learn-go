@@ -1,3 +1,3 @@
-# My Awesome Book
+# GoLang学习笔记
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+该笔记主要用于记录自己学习Ｇolang中所理解的东西
