@@ -9,6 +9,7 @@
 * [配置文件](pei-zhi-wen-jian.md)
 * [map](map.md)
 * [Array](array.md)
+* [function](function.md)
 
 ## 包的使用
 
