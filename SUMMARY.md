@@ -15,4 +15,5 @@
 
 * [mux](bao-de-shi-yong/mux.md)
 * [strconv](bao-de-shi-yong/strconv.md)
+* [sha1](bao-de-shi-yong/sha1.md)
 
