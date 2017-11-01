@@ -12,7 +12,7 @@
 http://www.example.com:80/path/to/myfile.html?key1=value1&key2=value2#SomewhereInTheDocument
 ```
 
-##### 协议部分
+##### 协议部分(http://)
 
 在此处的协议部分指的是`http://`,所以常见的协议的方案如下:
 
@@ -24,23 +24,23 @@ http://www.example.com:80/path/to/myfile.html?key1=value1&key2=value2#SomewhereI
 |     tel     |    电话     |    urn     |   统一资源名称    |
 | view-source |  资源的源代码   |   ws/wss   | websocket链接 |
 
-##### 主机（域名）
+##### 主机（域名:www.example.com）
 
 主机指代的是网络上的地址，示例中的主机为`www.example.com`
 
-##### 端口
+##### 端口(:80)
 
 对于常见的`http`协议，其端口通常为`80`, 而对于`https`协议而言，其端口号一般为`443`
 
-##### 路径
+##### 路径(/path/to/myfile.html)
 
 路径为web服务器上资源的位置，示例中的路径为:`/path/to/myfile.html`
 
-##### 查询
+##### 查询(?key1=value1&key2=value2)
 
 提供给web服务器的额外参数，通常由`&`分割符分割的k/v键值对
 
-##### 片段
+##### 片段(#SomewhereInTheDocument)
 
 片段(也称作锚点)，标识的是资源的某一个部分
 
