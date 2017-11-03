@@ -109,6 +109,30 @@ func (f *File) Chown(uid, gid int) error
 
 变更文件的所有者和所在组,在windows系统下，将会永远返回错误
 
+###### Write
+
+```go
+func (f *File) Write(b []byte)(n int, err error)
+```
+
+将长度为`len(b)`字节的数据写入文件，并返回写入字节的大小，如果返回的长度与写入的长度不一致，将会返回一个非空的值
+
+###### WriteAt
+
+```go
+func (f *File) WriteAt(b []byte, off int64)(n int, err error)
+```
+
+将指定长度的内容从偏移量`off`处开始，写入文件，返回结果与`Write`方法一致
+
+###### WriteString
+
+```go
+func (f *File) WriteString(s string)(n int, err error)
+```
+
+将字符串写入到文件中
+
 ##### 读取
 
 ###### Fd
@@ -141,7 +165,7 @@ func (f *File) Read(b []byte)(n int, err error)
 func (f *File) Read(b []byte, off int64)(n int, error)
 ```
 
-读取`[len(b), off]`区间范围的字节数,如果`n < len(b)`总是返回一个非空的错误，读取到文件末尾，讲会返回`EOF`
+从`off`位置读取`len(b)`长度的字节数,并将读取到的结果存储到`b`切片中，如果`n < len(b)`总是返回一个非空的错误，读取到文件末尾，将会返回`EOF`
 
 ###### Readdir（尚未理解）
 
@@ -153,7 +177,43 @@ func(f *File) Readdir(n int)([]FileInfo, error)
 
 
 
+###### seek
 
+```go
+func(f *File) Seek(offset int64, whence int)(ret int64, err error)
+```
+
+设置文件指针到指定的位置，只对下一次文件读取和写入操作有效，并返回当前文件的偏移量，该方法对于以`O_APPEND`模式打开的文件无效
+
+whence参数取值范围如下：
+
+- `0`:相对于文件头部
+- `1`:相对于文件当前读取位置
+- `2`:相对于文件末尾
+
+如果offset所在的位置没有内容的话，创建的文件将会造成编码错误，导致无法打开
+
+###### Stat
+
+```go
+func (f *File) Stat() (FileInfo, error)
+```
+
+返回用户描述结构的结构体`FileInfo`
+
+###### Sync
+
+```go
+func (f *File) Sync() error
+```
+
+###### Truncate
+
+```go
+func (f *File) Truncate(size int64) error
+```
+
+截取文件内容大小到指定长度，但是并不改变当前指针的迁移量,如果发生错误，将会返回路径错误，如果截取的长度超过文件本身的大小，将会导致文件编码错误
 
 ##### 删除
 
@@ -166,6 +226,8 @@ func (f *File) Close() error
 ```
 
 关闭一个打开的文件
+
+
 
 
 
