@@ -32,6 +32,9 @@ ls -l filename second.jpg
 - 46228 文件的大小，单位为byte
 - `11月　2 10:05`　标识文件最后一次写入的时间
 
+### os
+> os包中的文件的相关操作
+
 ### 参考文档
 
 - [Linux Files and File Permission](http://www.comptechdoc.org/os/linux/usersguide/linux_ugfilesp.html)
