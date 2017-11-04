@@ -19,4 +19,5 @@
 * [rand](rand.md)
 * [multipart](bao-de-shi-yong/multipart.md)
 * [file](bao-de-shi-yong/file.md)
+* [ioutil](bao-de-shi-yong/ioutil.md)
 
