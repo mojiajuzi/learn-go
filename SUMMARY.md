@@ -17,6 +17,7 @@
 * [rand](rand.md)
 * [multipart](bao-de-shi-yong/multipart.md)
 * [file](bao-de-shi-yong/file.md)
+* [filepath](bao-de-shi-yong/filepath.md)
 * [ioutil](bao-de-shi-yong/ioutil.md)
 
 ## code
