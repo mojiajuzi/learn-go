@@ -3,15 +3,13 @@
 ## 基础知识
 
 * [简介](README.md)
-* [基础](chapter1.md)
-* [参考](can-kao.md)
-* [类型](lei-xing.md)
-* [配置文件](pei-zhi-wen-jian.md)
+* [base](chapter1.md)
+* [type](lei-xing.md)
 * [map](map.md)
 * [Array](array.md)
 * [function](function.md)
 
-## 包的使用
+## package
 
 * [mux](bao-de-shi-yong/mux.md)
 * [strconv](bao-de-shi-yong/strconv.md)
@@ -20,4 +18,8 @@
 * [multipart](bao-de-shi-yong/multipart.md)
 * [file](bao-de-shi-yong/file.md)
 * [ioutil](bao-de-shi-yong/ioutil.md)
+
+## code
+
+* [config file](pei-zhi-wen-jian.md)
 
