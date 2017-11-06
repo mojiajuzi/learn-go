@@ -164,3 +164,62 @@ func Join(elem ...string) string
 func Rel(basepath, targpath string) (string, error)
 ```
 
+返回一个相对地址，将返回的路径用分隔符与`basepath`连接，等价于`targpath`,也就是说`Jion(basepath, targpath)`等价于`targpath`,如果成功，返回值总是相对于`basepath`的，也就是说`targpath`和`basepath`没有共享路径元素，如果两个参数，一个是绝对路径而另外一个是相对路径，或者`targpath`无法标识为相对于`basepath`的路径，将返回错误
+
+##### Split
+
+```go
+func Split(path string)(dir, file string)
+```
+
+以最后一个分隔符作为基准，将给定的路径拆分为目录和文件两个部分，如果没有分隔符，那么将会返回一个空的目录，并将给定的路径作为文件名称，返回的结果总是符合如下`path=dir+file`
+
+##### SplitList
+
+```go
+func SplitLIst(path string)[]string
+```
+
+依赖于系统列表分隔符(在Linux系统中为`:`)分割给定的路径，如果给定的路径为空，将会返回一个空的切片
+
+
+
+##### ToSlash
+
+```go
+func ToSlash(path string) string
+```
+
+使用`/`符号，替换给定路径中的分隔符，如果给定的路径中包含多个连续的分隔符，那么将使用多个`/`替代
+
+##### VolumeName
+
+```go
+func VolumeName(path string) string
+```
+
+返回给定路径的盘符号，比如给定`C:\foo\bar`在Windows系统中将会返回`C:`, 给定`\\host\share`将会返回`\\host\share`，在其他平台将会返回空字符串
+
+
+
+##### Walk
+
+```go
+func Walk(root string, walkFn WalkFunc) error
+```
+
+通过调用给定的`walkFn`函数，遍历给定的`root`下的目录树(包括`root`)，　遍历过程中出现的任何错误，都将会被`walkFn`函数过滤掉，并且按照文件名进行排序，这使得输出的结果是可确定的，对于过深的目录效率会比较低。该方法对于软链接是无法进行遍历的
+
+
+
+####WalkFunc
+
+```go
+type WalkFunc func(path string, info os.FileINfo, err error) error
+```
+
+该类型函数是`Walk`函数遍历时调用的，`path`参数会包含`Walk`函数的`root`参数作为前缀，比如说：`Walk`函数
+
+调用时给定的`root`参数的值是`dir`，`dir`目录下面包含一个文件`a`,那么`Walk`函数调用的时候的参数值就是`dir/a`
+
+如果遍历 `path` 指定的文件或目录时出现了问题，传入的参数 `err` 会描述该问题，`WalkFunc` 类型函数可以决定如何去处理该错误（`Walk` 函数将不会深入该目录）；如果该函数返回一个错误，`Walk`函数的执行会中止；只有一个例外，如果`Walk`的`walkFn` 返回值是 `SkipDir`，将会跳过该目录的内容而 `Walk`函数照常执行处理下一个文件。
