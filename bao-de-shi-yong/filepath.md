@@ -223,3 +223,17 @@ type WalkFunc func(path string, info os.FileINfo, err error) error
 调用时给定的`root`参数的值是`dir`，`dir`目录下面包含一个文件`a`,那么`Walk`函数调用的时候的参数值就是`dir/a`
 
 如果遍历 `path` 指定的文件或目录时出现了问题，传入的参数 `err` 会描述该问题，`WalkFunc` 类型函数可以决定如何去处理该错误（`Walk` 函数将不会深入该目录）；如果该函数返回一个错误，`Walk`函数的执行会中止；只有一个例外，如果`Walk`的`walkFn` 返回值是 `SkipDir`，将会跳过该目录的内容而 `Walk`函数照常执行处理下一个文件。
+
+如下，遍历指定目录的文件及其子文件
+```go
+func main() {
+	p := "/home/gru/go/src/gru"
+	err := filepath.Walk(p, func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			fmt.Println(info.Name())
+		}
+		return nil
+	})
+	fmt.Println(err)
+}
+```
