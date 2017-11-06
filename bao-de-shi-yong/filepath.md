@@ -230,10 +230,13 @@ func main() {
 	p := "/home/gru/go/src/gru"
 	err := filepath.Walk(p, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
-			fmt.Println(info.Name())
+			fmt.Println("file:", info.Name(), "in directory:", path)
 		}
 		return nil
 	})
 	fmt.Println(err)
 }
 ```
+
+### 参考文档
+- [Golang 标准库](http://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter06/06.2.html)
