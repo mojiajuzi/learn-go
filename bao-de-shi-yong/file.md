@@ -226,6 +226,80 @@ func (f *File) Close() error
 
 关闭一个打开的文件
 
+
+### 目录的相关操作
+
+#### Chdir
+```go
+func Chdir(dir string) error
+```
+将当前的工作目录变更到给定的目录中，如果失败，将会返回无法找到路径的问题
+
+#### Chmod
+```go
+func Chmod(name string, mode FileMode) error
+```
+变更给定文件的模式，如果给定的`name`是一个软链接，将会变更该链接所指向的文件的模式,如果失败，将会返回路径错误
+
+#### Chown
+```go
+func Chown(name string,　uid, gid int) error
+```
+变更文件的归属，同时变更文件的用户以及用户组,如果是软链接，则直接作用于其目标文件
+
+#### Chtimes
+```go
+//atime: access time  mtime:modification time
+func Chtimes(name string, atime, mtime time.Time) error
+```
+变更文件的访问时间和修改时间，类似于Unix中的`utime, utimes`两个函数
+
+#### Executable
+```go
+func Executable()(string, error)
+```
+执行文件并返回当前所执行文件的绝对路径，对于返回的路径并不能保证一定指向执行的文件，如果使用的是符号链接启动文件的话
+对于不同的操作系统，其返回的结果是不一样的，可能返回符号链接或者指向符号链接的路径，如果想要获取精确的返回值，需要使用
+`filepaht`包的`EvalSymlinks`
+
+#### Mkdir
+```go
+func Mkdir(name string, per FileMode) error
+```
+创建一个目录,如果目录存在，则会创建失败
+
+#### ＭkdirAll
+```go
+func MkdirAll(path string, perm FileMode) error
+```
+循环创建多层次的目录，并且所创建的目录都应用相同的权限，如果目录存在，则不执行操作
+
+#### Remove
+```go
+func Remove(name string) error
+```
+删除给定的文件或者目录，文件不存在，文件夹不为空，则会删除失败
+
+#### RemoveAll
+```go
+func RemoveAll(path string) error
+```
+移除给定的文件，包括文件下面包含的子文件，如果遇到文件错误，该函数会继续执行之后的文件，直到所有的文件都执行过一次
+并且返回遇到的第一个文件错误，如果给定的文件不存在，那么将会返回nil,而不是错误
+
+#### Rename
+```go
+func Rename(oldpath, newpath string) error
+```
+重命名/移动文件，如果给定的`newpath`已经存在，并且不是一个目录，那么将会被替换
+对于有些操作系统而言，如果`oldpath`和`newpath`不在同一个目录里面，将会被禁止操作
+
+#### SameFile
+```go
+func SameFile(f1,f2 FileInfo) bool
+```
+检查两个文件的描述符是否一样
+
 ### 参考文档
 
 * [Linux Files and File Permission](http://www.comptechdoc.org/os/linux/usersguide/linux_ugfilesp.html)

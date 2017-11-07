@@ -2,8 +2,6 @@
 
 > 该包实现了操作文件路径的实用方方法
 
-
-
 #### 常量
 
 ```go
@@ -37,8 +35,6 @@ func Abs(path string) (string,error)
 
 返回给定路径的绝对路径，如果给定的`path`不存在，那么将会将该字符串作为当前路径的子目录进行处理
 
-
-
 ##### Base
 
 ```go
@@ -47,9 +43,9 @@ func Base(path string) string
 
 返回路径元素的最后一个元素，
 
-- 如果最后一个元素带有分隔符，分隔符将会被直接忽略，
-- 给定的`path`为空，将会返回`.`
-- 如果给定的`path`为分隔符，那么将会直接返回分隔符
+* 如果最后一个元素带有分隔符，分隔符将会被直接忽略，
+* 给定的`path`为空，将会返回`.`
+* 如果给定的`path`为分隔符，那么将会直接返回分隔符
 
 ##### Clean
 
@@ -59,9 +55,9 @@ func Clean (path string) string
 
 对路径进行过滤处理，其应用如下的规则
 
-- 将多个连续的分隔符变成一个分隔符
-- 直接去除路径中的`.`符号
-- 去除路径中的`..`符号以及该符号前两个分隔符之间的字符
+* 将多个连续的分隔符变成一个分隔符
+* 直接去除路径中的`.`符号
+* 去除路径中的`..`符号以及该符号前两个分隔符之间的字符
 
 ##### Dir
 
@@ -71,8 +67,8 @@ func Dir(path string) string
 
 去除最后一个分隔符及其之后的字符，
 
-- 如果给定的路径为空，那么返回`.` 
-- 如果给定的路径只有一个分隔符，那么则返回该分隔符
+* 如果给定的路径为空，那么返回`.` 
+* 如果给定的路径只有一个分隔符，那么则返回该分隔符
 
 ##### EvalSymlinks
 
@@ -81,8 +77,6 @@ func EvalSymlinks(path string) (string, error)
 ```
 
 返回过滤掉软链接之后的路径名称，如果给定的是一个相对路径，那么将会返回一个相对于当前目录的相对路径
-
-
 
 ##### Ext
 
@@ -110,21 +104,19 @@ func Match(pattern, name string) (matched bool, err error)
 
 ```shell
 pattern:
-	{term}
+    {term}
 term:
-	'*' 匹配所有非分割字符
-	'?' 匹配单个字符
-	'[' ['^'] { 字符区间　}　']' 非空字符组
-	c 匹配字符　c (c 不能为：　'*', '?','\\','[')
-	'\\' c 匹配字符c
-	
+    '*' 匹配所有非分割字符
+    '?' 匹配单个字符
+    '[' ['^'] { 字符区间　}　']' 非空字符组
+    c 匹配字符　c (c 不能为：　'*', '?','\\','[')
+    '\\' c 匹配字符c
+
 character-range:
-	c 匹配字符c (c　不能为: '\\', '-', ']')
-	'\\' c 匹配字符c
-	lo '-' hi 匹配 lo <= c <= hi
+    c 匹配字符c (c　不能为: '\\', '-', ']')
+    '\\' c 匹配字符c
+    lo '-' hi 匹配 lo <= c <= hi
 ```
-
-
 
 ##### Glob
 
@@ -180,9 +172,7 @@ func Split(path string)(dir, file string)
 func SplitLIst(path string)[]string
 ```
 
-依赖于系统列表分隔符(在Linux系统中为`:`)分割给定的路径，如果给定的路径为空，将会返回一个空的切片
-
-
+依赖于系统列表分隔符\(在Linux系统中为`:`\)分割给定的路径，如果给定的路径为空，将会返回一个空的切片
 
 ##### ToSlash
 
@@ -200,19 +190,15 @@ func VolumeName(path string) string
 
 返回给定路径的盘符号，比如给定`C:\foo\bar`在Windows系统中将会返回`C:`, 给定`\\host\share`将会返回`\\host\share`，在其他平台将会返回空字符串
 
-
-
 ##### Walk
 
 ```go
 func Walk(root string, walkFn WalkFunc) error
 ```
 
-通过调用给定的`walkFn`函数，遍历给定的`root`下的目录树(包括`root`)，　遍历过程中出现的任何错误，都将会被`walkFn`函数过滤掉，并且按照文件名进行排序，这使得输出的结果是可确定的，对于过深的目录效率会比较低。该方法对于软链接是无法进行遍历的
+通过调用给定的`walkFn`函数，遍历给定的`root`下的目录树\(包括`root`\)，　遍历过程中出现的任何错误，都将会被`walkFn`函数过滤掉，并且按照文件名进行排序，这使得输出的结果是可确定的，对于过深的目录效率会比较低。该方法对于软链接是无法进行遍历的
 
-
-
-####WalkFunc
+#### WalkFunc
 
 ```go
 type WalkFunc func(path string, info os.FileINfo, err error) error
@@ -225,18 +211,23 @@ type WalkFunc func(path string, info os.FileINfo, err error) error
 如果遍历 `path` 指定的文件或目录时出现了问题，传入的参数 `err` 会描述该问题，`WalkFunc` 类型函数可以决定如何去处理该错误（`Walk` 函数将不会深入该目录）；如果该函数返回一个错误，`Walk`函数的执行会中止；只有一个例外，如果`Walk`的`walkFn` 返回值是 `SkipDir`，将会跳过该目录的内容而 `Walk`函数照常执行处理下一个文件。
 
 如下，遍历指定目录的文件及其子文件
+
 ```go
 func main() {
-	p := "/home/gru/go/src/gru"
-	err := filepath.Walk(p, func(path string, info os.FileInfo, err error) error {
-		if !info.IsDir() {
-			fmt.Println("file:", info.Name(), "in directory:", path)
-		}
-		return nil
-	})
-	fmt.Println(err)
+    p := "/home/gru/go/src/gru"
+    err := filepath.Walk(p, func(path string, info os.FileInfo, err error) error {
+        if !info.IsDir() {
+            fmt.Println("file:", info.Name(), "in directory:", path)
+        }
+        return nil
+    })
+    fmt.Println(err)
 }
 ```
 
 ### 参考文档
-- [Golang 标准库](http://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter06/06.2.html)
+
+* [Golang 标准库](http://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter06/06.2.html)
+
+
+
