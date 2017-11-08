@@ -8,6 +8,7 @@
 * [map](map.md)
 * [Array](array.md)
 * [function](function.md)
+* [Goroutine](goroutine.md)
 
 ## package
 
