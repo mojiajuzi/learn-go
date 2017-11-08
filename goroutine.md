@@ -105,7 +105,84 @@ func main() {
 1 a 2 3 b 4 c 5 d e main terminated
 ```
 ![](/assets/Goroutines-explained.png)
-#### Channels
+
+
+### Channele
+Channel是Goroutine之间进行通信的管道，就像是流水一样，从管道的一道倒管道的另外一端
+数据在Channel中也是一样
+
+#### Channels的声明和定义
+每一个管道都与一个数据类型相关联，其他的数据类型将不能够在Channel之中进行传递
+声明一个Channel的语句是`chan T`，使用chan关键字　，加上Channel中的数据类型,比如：
+```go
+var a chan int
+```
+`channel`的零值是nil,为零值的channel没有任何用户，因此在定义channel的时候，应该使用make函数
+```go
+a := make(chan int)
+```
+
+#### Ｃhannels的使用
+如下例子表示了向channel发送数据以及从channel中读取数据
+```go
+data :=  <- a //从channel中读取数据
+a <- data　//向channel中写入数据
+```
+默认状态下使用channel传递数据是阻塞的，也就是说当将一个数据发送倒channel时，
+代码执行将会停留在发送数据声明的语句的地方，直到其他的Goroutine从channel中读取数据，
+程序才会继续往下执行，反过来也是一样的，读取数据必须等到有Goroutine向channel中写入数据才会继续执行
+基于channel这个特性，Golang才不需要像其他编程语言一样，需要明显的添加锁或者条件语句
+
+对于上面讲Goroutine那个例子进行改造如下:
+```go
+package main
+
+import "fmt"
+
+func hello(done chan bool) {
+	fmt.Println("hello world goroutine")
+	done <- true
+}
+
+func main() {
+	done := make(chan bool)
+	go hello(done)
+	<-done
+	fmt.Println("main function")
+}
+```
+上面的例子会打印如下:
+```bash
+hello world goroutine
+main function
+```
+因为当程序运行到`<-done`语句时，程序发生了阻塞，所以停留在了这个语句，而由于上一个语句`go hello(done)`
+开启了一个新的Goroutine，在hello里面向`done`这个channel写入了数据，所以`main`得以继续运行。
+
+#### 死锁
+使用channel的时候有一个特别需要注意的地方，就是防止可能出现的死锁的情况，比如:
+```go
+ch := make(chan int)
+ch <- 5
+```
+以上情况，向ch中写入了一个数据，但是并没有其他的Goroutine来读取这个数据，程序将会一致停留在向ch中写入数据的地方
+因此，一旦程序运行，将会发生一个panic
+
+#### 单向Channels
+截至目前为止，我们所讨论的channel都是单向的，输入可以写入也可以读取，除此之外，我们还可以创建单向的channel
+,顾名思义，我们可以只写入或者只读取数据，比如：
+```go
+func sendData(sendch chan<- int) {
+	sendch <- 10
+}
+
+func main() {
+	sendch := make(chan<- int)
+	go sendData(sendch)
+	fmt.Println(<-sendch)
+}
+```
+加入我们运行如上代码，将会提示我们不能对一个只写的channel中读取数据
 
 
 
