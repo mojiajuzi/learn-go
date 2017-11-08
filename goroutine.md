@@ -106,3 +106,9 @@ func main() {
 ```
 ![](/assets/Goroutines-explained.png)
 #### Channels
+
+
+
+### 参考文档
+
+- [Golang tutorial series](https://golangbot.com/learn-golang-series/)
