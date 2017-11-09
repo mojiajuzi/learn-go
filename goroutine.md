@@ -182,7 +182,253 @@ func main() {
 	fmt.Println(<-sendch)
 }
 ```
-加入我们运行如上代码，将会提示我们不能对一个只写的channel中读取数据
+在上面的代码中，我们首先创建了一个只具有写属性的channel(使用`chan<- int`来标识),当我们在主函数中试图从只写的channel中
+读取数据(`<-sendch`)的时候，程序会提示正在执行的是一个非法操作
+
+目前来看一切顺利，但是如果只是创建了一个只写而不能读取的channel有什么意义呢？事实上其用处在于转换，可以将一个双向channel转换成一个单向的channel
+```go
+func sendData(sendch chan<- int) {
+	sendch <- 10
+}
+
+func main() {
+	sendch := make(chan int)
+	go sendData(sendch)
+	fmt.Println(<-sendch)
+}
+```
+如上所示，在main Goroutine里面创建一个双向的channel,然后将该channel作为参数，传递到只接收单向channel的sendData函数中，、
+所以只读的channel只存在于sendData,在main Goroutine中的channel依旧是双向的
+
+##### 关闭channel以及循环读取
+channel的发送者能够提醒接受者将停止数据的发送，接受者能够通过额外的参数判断channel是否已经被关闭
+```go
+v, ok := <- ch
+```
+如果`ok == true`则表明已经接收到了数据，相反表示，channel已经关闭了，从已经关闭的channel里面读取到的将会是chan所传送数据的零值
+
+```go
+func producer(chnl chan<- int) {
+	for index := 0; index < 10; index++ {
+		chnl <- index
+	}
+	close(chnl)
+}
+
+func main() {
+	ch := make(chan int)
+	go producer(ch)
+	for {
+		v, ok := <-ch
+		if ok == false {
+			break
+		}
+		fmt.Println("Received", v, ok)
+	}
+}
+```
+如上所示，使用`close`可以关闭channel
+
+### Buffered Channels　与工作池(Worker Pools)
+当创建一个可缓冲的channel的时候，向channel发送数据，只有在给定的缓冲容量已经满了的情况下才可能出现阻塞的情况
+相同的，从一个可缓冲的channel读取数据的时候，只有在channel为空的情况下，才会发生阻塞
+
+可缓冲的channel在创建的时候，需要添加一个额外的容量参数，来表明其容量的大小
+```go
+ch := make(chan type, capacity)
+```
+没有缓冲的channel等价于容量为0的可缓冲channel
+
+```go
+func main() {
+	ch := make(chan string, 2)
+	ch <- "naveen"
+	ch <- "paul"
+	fmt.Println(<-ch)
+	fmt.Println(<-ch)
+}
+```
+如上，我们创建了一个容量为2的可缓冲channel，并且向里面写入了两个字符串，在这里没有超过其容量，因此没有出现死锁的情况
+
+下面这个程序能够让我们更好的理解有缓冲的channel所造成的死锁
+```go
+func write(ch chan int) {
+	for index := 0; index < 5; index++ {
+		ch <- index
+		fmt.Println("successfully wrote", index, "to ch")
+	}
+	close(ch)
+}
+
+func main() {
+	ch := make(chan int, 2)
+	go write(ch)
+	time.Sleep(2 * time.Second)
+	for v := range ch {
+		fmt.Println("read value ", v, " from ch")
+		time.Sleep(2 * time.Second)
+	}
+}
+```
+在上面的程序中
+1. 先创建一个容量为2,数据类型为int类型的有缓冲的channel
+1. 创建一个新的Goroutine write,此时暂停程序运行
+1. 新建的Goroutine开始往ch中写入数据，容量满后造成Goroutine write阻塞
+1. Goroutine　main继续执行，并且开始读取channel中的数据
+1. 由于设置了读取间隔，所以每读取一个数据，使得channel的容量得以使用，这个时候Goroutine write继续执行
+1. 程序继续运行，直到channel被关闭
+
+#### buffered channel的死锁
+```go
+func main() {
+	ch := make(chan string, 2)
+	ch <- "hello"
+	ch <- "world"
+	ch <- "deadlock"
+	fmt.Println(<-ch)
+	fmt.Println(<-ch)
+}
+```
+如上所示，由于往容量只有２大小的channel　写入三个数据，当写入第三个的时候，由于没有多余的容量，造成程序无法运行
+这个时候就需要另外一个Goroutine从channel中读取数据，使得channel能够有多余的空间，从而使得Goroutine main继续执行
+
+channel的容量指的是，其公共能够存储的值的数量，其长度指的是当前channel中所包含的元素的数量
+
+#### 等待组
+> 等待组主要是用来实现一个工作池，　它经常被用于等待一个Goroutine集合执行完成，在该集合中的所有Goroutine执行完成前，它是阻塞的
+
+举个例子：
+```go
+func process(i int, wg *sync.WaitGroup) {
+	fmt.Println("started Goroutine", i)
+	time.Sleep(2 * time.Second)
+	fmt.Printf("Goroutine %d ended\n", i)
+	wg.Done()
+}
+
+func main() {
+	no := 3
+	var wg sync.WaitGroup
+	for index := 0; index < no; index++ {
+		wg.Add(1)
+		go process(index, &wg)
+	}
+	wg.Wait()
+	fmt.Println("All go routines finished executing")
+}
+```
+说明：首先创建了一个`WaitGroup`的变量,`WaitGroup`就像是一个计数器，当使用`Add`方法增加了一个int类型之后
+`WaitGroup`的计数器会自动增长(其中Add的参数是设置增长的步长)，
+相反当使用`Done`方法时会自动递减,而`Wait`方法则会造成阻塞，
+直到`WaitGroup`的计数器的值为0
+
+其中很重要的一点就是，在开启新的Goroutine的时候，传递的`WaitGroup`必须是传址操作，否则的话，main将会无法接收到其运行结束的信号
+
+
+#### 工作池的实现
+实现工作池的一种方式是使用有缓冲的channel
+
+一般来说，一个工作池就是等待分配任务的线程的集合，其中的线程一旦完成任务，又在等待下一次任务的分配
+
+我们将会使用有缓冲的channel实现这样一个工作池，，给定一个数字，计算其整数位之和
+因此需要实现如下的功能：
+- 创建一个Goroutine池，监听输入buffered channel并等待任务的分配
+- 增加一个任务到输入buffered channel
+- 在任务结束后，将一个结果输出到输出channel
+- 从输出channel读取并打印结果
+
+#### 实现一个简单的工作池
+```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"sync"
+	"time"
+)
+
+type Job struct {
+	id       int
+	randomno int
+}
+
+type Result struct {
+	job         Job
+	sumofdigits int
+}
+
+var jobs = make(chan Job, 10)
+var results = make(chan Result, 10)
+
+func main() {
+	startTime := time.Now()
+	noOfJobs := 100
+	//创建Job，并将其发送到channel jobs
+	go allocate(noOfJobs)
+
+	//循环读取channel results
+	done := make(chan bool)
+	go result(done)
+
+	//创建工作池并计算job
+	noOfWorkers := 10
+	createWorkerPool(noOfWorkers)
+
+	<-done
+	ednTime := time.Now()
+
+	diff := ednTime.Sub(startTime)
+	fmt.Println("total time taken", diff.Seconds(), " seconds")
+}
+
+func digits(number int) int {
+	sum := 0
+	no := number
+	if no != 0 {
+		digit := no % 10
+		sum += digit
+		no /= 10
+	}
+	time.Sleep(2 * time.Second)
+	return sum
+}
+
+func worker(wg *sync.WaitGroup) {
+	for job := range jobs {
+		output := Result{job, digits(job.randomno)}
+		results <- output
+	}
+	wg.Done()
+}
+
+func createWorkerPool(noOfWorkers int) {
+	var wg sync.WaitGroup
+	for index := 0; index < noOfWorkers; index++ {
+		wg.Add(1)
+		go worker(&wg)
+	}
+	wg.Wait()
+	close(results)
+}
+
+func allocate(noOfJobs int) {
+	for index := 0; index < noOfJobs; index++ {
+		randomno := rand.Intn(999)
+		job := Job{index, randomno}
+		jobs <- job
+	}
+	close(jobs)
+}
+
+func result(done chan bool) {
+	for result := range results {
+		fmt.Printf("Job id %d, input random no %d, sum of digits %d\n", result.job.id, result.job.randomno, result.sumofdigits)
+	}
+	done <- true
+}
+```
+
 
 
 
