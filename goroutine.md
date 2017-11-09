@@ -429,6 +429,53 @@ func result(done chan bool) {
 }
 ```
 
+### select
+> select 声明语句主要用于从多个发送/接收的channel中选择一个进行操作，该声明是阻塞的，直到有一个channel以及准备好
+> 如果同时有多个channel准备好了，将会随机选择一个进行操作，该声明类似于switch语句
+
+```go
+func main() {
+	output1 := make(chan string)
+	output2 := make(chan string)
+	go server1(output1)
+	go server2(output2)
+	select {
+	case s1 := <-output1:
+		fmt.Println(s1)
+	case s2 := <-output2:
+		fmt.Println(s2)
+	}
+	fmt.Println("hello")
+}
+
+func server1(ch chan string) {
+	time.Sleep(2 * time.Second)
+	ch <- "from server1"
+}
+
+func server2(ch chan string) {
+	time.Sleep(1 * time.Second)
+	ch <- "from server2"
+}
+```
+其输出结果为：
+```bash
+from server2
+hello
+```
+如上所示，由于`server1`延迟的时间比`server2`长，因此`server2`,所以select会选择`server2`，同时又由于select是阻塞的，
+所以主函数的打印在最后执行。
+
+类似于switch，也可以为`select`设置一个默认的选项，如果执行到select语句的时候，还没有任何一个channel准备好，那么将会执行`default`
+
+如果给定一个控制select语句块，将会造成死锁
+```go
+func main(){
+    select{
+
+    }
+}
+```
 
 
 
