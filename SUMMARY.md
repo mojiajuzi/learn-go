@@ -10,6 +10,7 @@
 * [Array](array.md)
 * [function](function.md)
 * [Goroutine](goroutine.md)
+* [oop](oop.md)
 
 ## package
 
