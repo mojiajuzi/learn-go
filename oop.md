@@ -168,3 +168,7 @@ func (a Advertisement) source() string {
     return a.adName
 }
 ```
+
+#### 参考资料
+- [polymorphism](https://golangbot.com/polymorphism/)
+- [composition instead of inheritance](https://golangbot.com/inheritance/)
