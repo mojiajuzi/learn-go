@@ -3,6 +3,7 @@
 ## 基础知识
 
 * [简介](README.md)
+* [error](error.md)
 * [base](chapter1.md)
 * [type](lei-xing.md)
 * [map](map.md)
