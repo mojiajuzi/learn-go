@@ -362,8 +362,7 @@ func main() {
 }
 ```
 
-说明：首先创建了一个`WaitGroup`的变量,`WaitGroup`就像是一个计数器，当使用`Add`方法增加了一个int类型之后  
-`WaitGroup`的计数器会自动增长，  
+说明：首先创建了一个`WaitGroup`的变量,`WaitGroup`就像是一个计数器，`Add`方法表示需要接受多少个Goroutine完成信号，然后标识整体完成，`WaitGroup`的计数器会自动增长，  
 相反当使用`Done`方法时会自动递减,而`Wait`方法则会造成阻塞，  
 直到`WaitGroup`的计数器的值为0
 
