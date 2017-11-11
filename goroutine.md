@@ -363,7 +363,7 @@ func main() {
 ```
 
 说明：首先创建了一个`WaitGroup`的变量,`WaitGroup`就像是一个计数器，当使用`Add`方法增加了一个int类型之后  
-`WaitGroup`的计数器会自动增长\(其中Add的参数是设置增长的步长\)，  
+`WaitGroup`的计数器会自动增长，  
 相反当使用`Done`方法时会自动递减,而`Wait`方法则会造成阻塞，  
 直到`WaitGroup`的计数器的值为0
 
@@ -529,29 +529,35 @@ func main(){
 }
 ```
 
-### 互斥(Mutex)
+### 互斥\(Mutex\)
+
 > 互斥主要是提供了一种锁的机制，保证在同一个时间点只有一个Goroutine在运行，从而防止竞态条件的发生，使用互斥和channel解决竞态问题
 
-#### 临界区域(critical section)
-[!并发](cs-5.png)
-[!]
+#### 临界区域\(critical section\)
 
+[!并发](cs-5.png)  
+\[!\]
 
-如上所示，如果Goroutine1与Goroutine2并发执行，那么其结果是1,如果两者之一有一个新完成，然后再执行另外一个，那么结果就是2
+如上所示，如果Goroutine1与Goroutine2并发执行，那么其结果是1,如果两者之一有一个新完成，然后再执行另外一个，那么结果就是2  
 也就是说，程序执行的结果，依赖于程序执行中的上下文环境
 
 #### 互斥
+
 在`sync`包中提供了对`Mutex`的实现，使用其`Lock`和`Unlock`方法，可以防止竞态问题的出现
+
 ```go
 var mutex = &sync.Mutex{}
 mutex.Lock()
 x = x + 1
 mutex.Unlock()
 ```
+
 如果另外一个Goroutine想要使用这个锁，那么这个Goroutine就是阻塞的，必须要等到锁解锁以后才能重新使用
 
 #### 使用Mutex解决竞态问题
+
 如下会产生一个竞态问题，导致输出的结果不确定
+
 ```go
 package main  
 import (  
@@ -575,57 +581,60 @@ func main() {
 ```
 
 使用Mutex解决这个问题的方式就是加锁,将`x = x +1`的操作进行加锁，使其在某一个时间点独占
+
 ```go
 package main
 
 import (
-	"fmt"
-	"sync"
+    "fmt"
+    "sync"
 )
 
 var x = 0
 
 func increment(wg *sync.WaitGroup, m *sync.Mutex) {
-	m.Lock()
-	x = x + 1
-	m.Unlock()
-	wg.Done()
+    m.Lock()
+    x = x + 1
+    m.Unlock()
+    wg.Done()
 }
 func main() {
-	var w sync.WaitGroup
-	var m sync.Mutex
+    var w sync.WaitGroup
+    var m sync.Mutex
 
-	for index := 0; index < 1000; index++ {
-		w.Add(1)
-		go increment(&w, &m)
-	}
-	w.Wait()
-	fmt.Println("final value of x ", x)
+    for index := 0; index < 1000; index++ {
+        w.Add(1)
+        go increment(&w, &m)
+    }
+    w.Wait()
+    fmt.Println("final value of x ", x)
 }
 ```
 
 #### 使用channel解决竞态问题
+
 ```go
 var x = 0
 
 func increment(wg *sync.WaitGroup, ch chan bool) {
-	ch <- true
-	x = x + 1
-	<-ch
-	wg.Done()
+    ch <- true
+    x = x + 1
+    <-ch
+    wg.Done()
 }
 func main() {
-	var w sync.WaitGroup
-	ch := make(chan bool, 1)
+    var w sync.WaitGroup
+    ch := make(chan bool, 1)
 
-	for index := 0; index < 1000; index++ {
-		w.Add(1)
-		go increment(&w, ch)
-	}
-	w.Wait()
-	fmt.Println("final value of x ", x)
+    for index := 0; index < 1000; index++ {
+        w.Add(1)
+        go increment(&w, ch)
+    }
+    w.Wait()
+    fmt.Println("final value of x ", x)
 }
 ```
+
 利用有缓冲的channel在容量使用完毕会造成阻塞的特性，保证了在同一个时间点，只有一个Goroutine对`x`进行操作
 
 ### 参考文档
