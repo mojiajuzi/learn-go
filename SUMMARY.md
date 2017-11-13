@@ -27,3 +27,7 @@
 
 * [config file](pei-zhi-wen-jian.md)
 
+## Patterns
+
+* [introcust](patterns/introcust.md)
+
