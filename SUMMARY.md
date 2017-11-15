@@ -11,6 +11,7 @@
 * [function](function.md)
 * [Goroutine](goroutine.md)
 * [oop](oop.md)
+* [panic](panic.md)
 
 ## package
 
