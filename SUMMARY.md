@@ -23,6 +23,7 @@
 * [file](bao-de-shi-yong/file.md)
 * [filepath](bao-de-shi-yong/filepath.md)
 * [ioutil](bao-de-shi-yong/ioutil.md)
+* [websocket](bao-de-shi-yong/websocket.md)
 
 ## code
 
