@@ -12,6 +12,7 @@
 * [Goroutine](goroutine.md)
 * [oop](oop.md)
 * [panic](panic.md)
+* [govendor](govendor.md)
 
 ## package
 
