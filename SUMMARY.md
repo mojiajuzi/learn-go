@@ -29,6 +29,7 @@
 ## code
 
 * [config file](pei-zhi-wen-jian.md)
+* [medium](medium.md)
 
 ## Patterns
 
