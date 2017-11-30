@@ -31,7 +31,7 @@
 * [config file](pei-zhi-wen-jian.md)
 * [medium](medium.md)
 
-## Patterns
+## framework
 
-* [introcust](patterns/introcust.md)
+* [index](patterns/introcust.md)
 
