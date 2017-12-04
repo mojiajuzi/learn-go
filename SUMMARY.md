@@ -13,7 +13,6 @@
 * [oop](oop.md)
 * [panic](panic.md)
 * [govendor](govendor.md)
-* alice.md
 
 ## package
 
@@ -37,4 +36,5 @@
 * [index](patterns/introcust.md)
 * [handler](patterns/handler.md)
 * [alice](patterns/alicemd.md)
+* [share data](patterns/share-data.md)
 
