@@ -13,6 +13,7 @@
 * [oop](oop.md)
 * [panic](panic.md)
 * [govendor](govendor.md)
+* alice.md
 
 ## package
 
@@ -34,4 +35,5 @@
 ## framework
 
 * [index](patterns/introcust.md)
+* [alice](patterns/alicemd.md)
 
