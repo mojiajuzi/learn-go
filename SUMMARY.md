@@ -35,5 +35,6 @@
 ## framework
 
 * [index](patterns/introcust.md)
+* [handler](patterns/handler.md)
 * [alice](patterns/alicemd.md)
 
