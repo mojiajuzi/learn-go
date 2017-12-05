@@ -16,7 +16,6 @@
 
 ## package
 
-* [mux](bao-de-shi-yong/mux.md)
 * [strconv](bao-de-shi-yong/strconv.md)
 * [sha1](bao-de-shi-yong/sha1.md)
 * [rand](rand.md)
@@ -38,4 +37,5 @@
 * [alice](patterns/alicemd.md)
 * [share data](patterns/share-data.md)
 * [context](patterns/context.md)
+* [mux](bao-de-shi-yong/mux.md)
 
