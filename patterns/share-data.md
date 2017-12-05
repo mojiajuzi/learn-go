@@ -23,3 +23,21 @@ func main(){
 ```
 
 #### 将数据写入请求中，使得变量在整个请求的生命周期中可用
+通过使用类似于`gorilla/context`包，将需要传递的数据写入请求，然后就可以在后续的句柄中使用该数值
+```go
+func Logging(h http.Handler)http.Handler{
+    return http.HandlerFunc(function(w http.ResponseWriter, r *http.Request){
+        log.Println("before")
+        context.Set(r, "database", *sql.DB)
+        h.ServeHTTP(w,r)
+        log.Println("after")
+    })
+}
+
+func IndexHandle(w http.ResponseWriter, r *http.Request){
+    database, ok := context.Get(r, "database")
+    if !ok {
+        //DO SOMETHING
+    }
+}
+```
