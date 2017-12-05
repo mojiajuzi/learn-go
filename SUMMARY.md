@@ -37,4 +37,5 @@
 * [handler](patterns/handler.md)
 * [alice](patterns/alicemd.md)
 * [share data](patterns/share-data.md)
+* [context](patterns/context.md)
 
